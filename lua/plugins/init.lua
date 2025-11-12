@@ -58,4 +58,24 @@ return {
       })
     end,
   },
+   {
+    'brianhuster/live-preview.nvim',
+    dependencies = {
+      -- You can choose one of the following pickers
+      'nvim-telescope/telescope.nvim',
+      -- 'ibhagwan/fzf-lua',
+      -- 'echasnovski/mini.pick',
+		  -- 'folke/snacks.nvim',
+    },
+    config = function()
+      -- Setup live-preview (optional config)
+      -- require('livepreview.config').set({})
+      -- Add keymaps for live preview - using vim.schedule to ensure plugin is loaded
+      vim.schedule(function()
+        vim.keymap.set('n', '<leader>lp', '<cmd>LivePreview start<cr>', { desc = "Live Preview Start" })
+        vim.keymap.set('n', '<leader>lpp', '<cmd>LivePreview pick<cr>', { desc = "Live Preview Pick" })
+        vim.keymap.set('n', '<leader>lpc', '<cmd>LivePreview close<cr>', { desc = "Live Preview Close" })
+      end)
+    end,
+  },
 }
