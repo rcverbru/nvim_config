@@ -70,7 +70,17 @@ require("lazy").setup({
       "stevearc/dressing.nvim", -- for input provider dressing
       "folke/snacks.nvim", -- for input provider snacks
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      -- "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        "zbirenbaum/copilot.lua",
+        lazy = false,  -- ensures it loads at startup
+        config = function()
+          require("copilot").setup({
+            suggestion = { enabled = true },
+            panel = { enabled = true },
+          })
+        end
+      },
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
