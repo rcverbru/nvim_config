@@ -29,12 +29,22 @@ return {
   -- },
   {
     "toppair/peek.nvim",
-    event = { "VeryLazy" },
+    lazy = false,
     build = "deno task --quiet build:fast",
     config = function()
-      require("peek").setup()
-      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+      local peek = require("peek")
+      peek.setup({
+        -- Attempt to auto-detect browser
+        app = "google-chrome"
+      })
+
+      vim.api.nvim_create_user_command("PeekOpen", function()
+        peek.open()
+      end, {})
+
+      vim.api.nvim_create_user_command("PeekClose", function()
+        peek.close()
+      end, {})
     end,
   },
   {
@@ -58,14 +68,14 @@ return {
       })
     end,
   },
-   {
+  {
     'brianhuster/live-preview.nvim',
     dependencies = {
       -- You can choose one of the following pickers
       'nvim-telescope/telescope.nvim',
       -- 'ibhagwan/fzf-lua',
       -- 'echasnovski/mini.pick',
-		  -- 'folke/snacks.nvim',
+      -- 'folke/snacks.nvim',
     },
     config = function()
       -- Setup live-preview (optional config)
