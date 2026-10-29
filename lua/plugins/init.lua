@@ -5,6 +5,14 @@ return {
     opts = require "configs.conform",
   },
 
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    opts = {
+      -- add any custom options here
+    }
+  },
+
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
@@ -18,15 +26,15 @@ return {
 
   { "rafamadriz/friendly-snippets" },
 
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function()
+      local opts = require "nvchad.configs.treesitter"
+      vim.list_extend(opts.ensure_installed, { "html", "css", "cpp", "c", "qmljs" })
+      return opts
+    end,
+  },
+
   {
     "toppair/peek.nvim",
     lazy = false,
@@ -47,6 +55,7 @@ return {
       end, {})
     end,
   },
+
   {
     "hedyhli/outline.nvim",
     lazy = false,
@@ -68,6 +77,7 @@ return {
       })
     end,
   },
+
   {
     'brianhuster/live-preview.nvim',
     dependencies = {
@@ -88,6 +98,7 @@ return {
       end)
     end,
   },
+
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
@@ -98,10 +109,29 @@ return {
       -- See Configuration section for options
     },
   },
+
   {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
-    config = true,
+    opts = {
+      terminal = {
+        snacks_win_opts = {
+          keys = {
+            -- <C-q> leaves terminal mode so you can scroll the history (k, <C-u>, gg, /search).
+            -- Press i or a to go back to typing in Claude.
+            claude_normal = { "<C-q>", "<C-\\><C-n>", mode = "t", desc = "Terminal normal mode" },
+          },
+        },
+      },
+    },
+    init = function()
+      -- keep far more terminal history than the 10k-line default (100k is nvim's max)
+      vim.api.nvim_create_autocmd("TermOpen", {
+        callback = function()
+          vim.opt_local.scrollback = 100000
+        end,
+      })
+    end,
     keys = {
       { "<leader>a", nil, desc = "AI/Claude Code" },
       { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
